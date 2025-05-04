@@ -38,23 +38,60 @@ do
 
 
     Tabs.Main:AddButton({
-        Title = "Button",
-        Description = "Very important button",
+        Title = "Infinity Yield",
+        Description = "Запускает мульти скрипт Infinity Yield",
         Callback = function()
             Window:Dialog({
-                Title = "Title",
-                Content = "This is a dialog",
+                Title = "Подтверждение",
+                Content = "Загрузить скрипт?",
                 Buttons = {
                     {
-                        Title = "Confirm",
+                        Title = "Да",
                         Callback = function()
-                            print("Confirmed the dialog.")
+                            loadstring(game: HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+                            Fluent:Notify({
+                                Title = "SynX-WS",
+                                Content = "Infinity Yield успешно загружен",
+                                SubContent = "", -- Optional
+                                Duration = 2 -- Set to nil to make the notification not disappear
+                            })
                         end
                     },
                     {
-                        Title = "Cancel",
+                        Title = "Нет",
                         Callback = function()
-                            print("Cancelled the dialog.")
+                            
+                        end
+                    }
+                }
+            })
+        end
+    })
+
+    Tabs.Main:AddButton({
+        Title = "Sirius",
+        Description = "Запускает удобный мульти скрипт с красивым интерфейсом",
+        Callback = function()
+            Window:Dialog({
+                Title = "Подтверждение",
+                Content = "Загрузить скрипт?",
+                Buttons = {
+                    {
+                        Title = "Да",
+                        Callback = function()
+                            loadstring(game:HttpGet('https://sirius.menu/sirius'))()
+                            Fluent:Notify({
+                                Title = "SynX-WS",
+                                Content = "Sirius успешно загружен",
+                                SubContent = "", -- Optional
+                                Duration = 2 -- Set to nil to make the notification not disappear
+                            })
+                        end
+                    },
+                    {
+                        Title = "Нет",
+                        Callback = function()
+                            
                         end
                     }
                 }
