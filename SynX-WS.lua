@@ -22,9 +22,9 @@ local Options = Fluent.Options
 
 do
     Fluent:Notify({
-        Title = "Notification",
-        Content = "This is a notification",
-        SubContent = "SubContent", -- Optional
+        Title = "SynX-WS",
+        Content = "Скрипт загружен!",
+        SubContent = "SynX-Welcome Script", -- Optional
         Duration = 5 -- Set to nil to make the notification not disappear
     })
 
