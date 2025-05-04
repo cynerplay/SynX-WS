@@ -3,19 +3,20 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = "SynXWelcomescript " .. Fluent.Version,
+    Title = "SynX-WS " .. Fluent.Version,
     SubTitle = "by SynXteam",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
     Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
     Theme = "Dark",
-    MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
+    MinimizeKey = Enum.KeyCode.RightShift -- Used when theres no MinimizeKeybind
 })
 
 --Fluent provides Lucide Icons https://lucide.dev/icons/ for the tabs, icons are optional
 local Tabs = {
-    Main = Window:AddTab({ Title = "Main", Icon = "home" }),
-    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+    Main = Window:AddTab({ Title = "Главная", Icon = "home" }),
+    States = Window:AddTab({ Title = "Статистика игрока", Icon = "chart-column" }),
+    Settings = Window:AddTab({ Title = "Настройки", Icon = "settings" })
 }
 
 local Options = Fluent.Options
@@ -109,25 +110,67 @@ do
 
     Options.MyToggle:SetValue(false)
 
-
+    Tabs.States:AddButton({
+        Title = "Сбросить",
+        Description = "Сбрашивает статистику игрока до стандартных значений",
+        Callback = function()
+            Window:Dialog({
+                Title = "Подтверждение",
+                Content = "Сбросить статистику?",
+                Buttons = {
+                    {
+                        Title = "Да",
+                        Callback = function()
+                            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
+                            game.Players.LocalPlayer.Character.Humanoid.JumpHeight = 7
+                            Fluent:Notify({
+                                Title = "SynX-WS",
+                                Content = "Статистика сброшена до значений по умолчанию",
+                                SubContent = "", -- Optional
+                                Duration = 2 -- Set to nil to make the notification not disappear
+                            })
+                        end
+                    },
+                    {
+                        Title = "Нет",
+                        Callback = function()
+                            
+                        end
+                    }
+                }
+            })
+        end
+    })
     
-    local Slider = Tabs.Main:AddSlider("Slider", {
-        Title = "Slider",
-        Description = "This is a slider",
-        Default = 2,
+    local Slider = Tabs.States:AddSlider("Slider", {
+        Title = "Скорость",
+        Description = "Скорость игрока",
+        Default = 16,
         Min = 0,
-        Max = 5,
+        Max = 300,
         Rounding = 1,
         Callback = function(Value)
-            print("Slider was changed:", Value)
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
         end
     })
 
-    Slider:OnChanged(function(Value)
-        print("Slider changed:", Value)
-    end)
+    local Slider = Tabs.States:AddSlider("Slider1", {
+        Title = "Прыжок",
+        Description = "Высота прыжка",
+        Default = 7,
+        Min = 0,
+        Max = 120,
+        Rounding = 1,
+        Callback = function(Value)
+            game.Players.LocalPlayer.Character.Humanoid.JumpHeight = Value
+        end
+    })    
 
-    Slider:SetValue(3)
+    --Slider:OnChanged(function(Value)
+     --   print("Slider changed:", Value)
+   -- end)
+
+   -- Slider:SetValue(3)
 
 
 
@@ -253,9 +296,9 @@ do
         end
     })
 
-    Input:OnChanged(function()
-        print("Input updated:", Input.Value)
-    end)
+    --Input:OnChanged(function()
+   --     print("Input updated:", Input.Value)
+   -- end)
 end
 
 
