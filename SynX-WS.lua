@@ -16,8 +16,12 @@ local Window = Fluent:CreateWindow({
 local Tabs = {
     Main = Window:AddTab({ Title = "Главная", Icon = "home" }),
     States = Window:AddTab({ Title = "Статистика игрока", Icon = "chart-column" }),
+    esp = Window:AddTab({ Title = "ESP", Icon = "chart-column" }),
     Settings = Window:AddTab({ Title = "Настройки", Icon = "settings" })
 }
+
+local Players = game:GetService("Players")
+_G.espits = false
 
 local Options = Fluent.Options
 
@@ -29,6 +33,49 @@ do
         Duration = 5 -- Set to nil to make the notification not disappear
     })
 
+    local Toggle = Tabs.esp:AddToggle("MyToggle", {Title = "ESP", Default = false })
+    Toggle:OnChanged(function(Value)
+        if Value == true then
+            _G.espits = true
+            for i, v in pairs(game.Workspace:GetDescendants()) do
+                if v:FindFirstChild("Highlight") then
+                    --nichego    
+
+                else
+                    
+                    if v:FindFirstChild("Humanoid")then
+                        local esp = Instance.new("Highlight", v)
+                        esp.FillColor = Color3.fromRGB(17, 164, 255)                                         
+                    end
+                end
+            end
+        else
+            _G.espits = false
+            for i, v in pairs(game.Workspace:GetDescendants()) do
+                if v:FindFirstChild("Highlight") then
+                    v.Highlight:Destroy()
+                end
+            end
+        end
+    end)
+
+    Players.PlayerAdded:Connect(function(player)
+        player.CharacterAdded:Connect(function(character)
+            if _G.espits == true then
+                local esp = Instance.new("Highlight", character)
+                esp.FillColor = Color3.fromRGB(17, 164, 255)
+            end
+        end)
+    end)
+
+    Players.PlayerAdded:Connect(onPlayerAdded)
+
+    local function onCharacterAdded(character)      
+        if _G.espits == true then
+            local esp = Instance.new("Highlight", character)
+            esp.FillColor = Color3.fromRGB(17, 164, 255)
+        end
+    end
 
 
     Tabs.Main:AddParagraph({
