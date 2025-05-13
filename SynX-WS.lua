@@ -8,7 +8,7 @@ local Window = Fluent:CreateWindow({
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
     Acrylic = true,
-    Theme = "Dark",
+    Theme = "Darker",
     MinimizeKey = Enum.KeyCode.RightShift
 })
 
@@ -219,7 +219,7 @@ do
 
     local espColorpicker = Tabs.esp:AddColorpicker("espColorpicker", {
         Title = "Цвет и прозрачность ESP",
-        Transparency = 0,
+        Transparency = 26,
         Default = Color3.fromRGB(17, 164, 255)
     })
 
