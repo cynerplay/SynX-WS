@@ -79,7 +79,7 @@ do
         Title = "SynX-WS",
         Content = "Загрузка библиотеки пользователя",
         SubContent = "SynX-Welcome Script",
-        Duration = 5
+        Duration = 1
     })
 
     -- Главная вкладка без изменений
