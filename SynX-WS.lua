@@ -219,7 +219,7 @@ do
 
     local espColorpicker = Tabs.esp:AddColorpicker("espColorpicker", {
         Title = "Цвет и прозрачность ESP",
-        Transparency = 26,
+        Transparency = 0,
         Default = Color3.fromRGB(17, 164, 255)
     })
 
@@ -232,7 +232,7 @@ do
     local espKeybind = Tabs.esp:AddKeybind("espKeybind", {
         Title = "Включить/Выключить ESP",
         Mode = "Toggle",
-        Default = "LeftControl",
+        Default = "BackSlash",
         Callback = function(state)
             espEnabled = state
             updateESP()
