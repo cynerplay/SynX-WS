@@ -152,7 +152,7 @@ do
     local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Toggle", Default = false })
 
     Toggle:OnChanged(function()
-        print("Toggle changed:", Options.MyToggle.Value)
+        
     end)
 
     Options.MyToggle:SetValue(false)
@@ -231,7 +231,7 @@ do
     Dropdown:SetValue("four")
 
     Dropdown:OnChanged(function(Value)
-        print("Dropdown changed:", Value)
+        
     end)
 
 
@@ -255,7 +255,7 @@ do
         for Value, State in next, Value do
             table.insert(Values, Value)
         end
-        print("Mutlidropdown changed:", table.concat(Values, ", "))
+        
     end)
 
 
@@ -266,7 +266,7 @@ do
     })
 
     Colorpicker:OnChanged(function()
-        print("Colorpicker changed:", Colorpicker.Value)
+        
     end)
     
     Colorpicker:SetValueRGB(Color3.fromRGB(0, 255, 140))
@@ -281,10 +281,11 @@ do
     })
 
     TColorpicker:OnChanged(function()
-        print(
+        "(
             "TColorpicker changed:", TColorpicker.Value,
             "Transparency:", TColorpicker.Transparency
         )
+        "
     end)
 
 
@@ -296,23 +297,23 @@ do
 
         -- Occurs when the keybind is clicked, Value is `true`/`false`
         Callback = function(Value)
-            print("Keybind clicked!", Value)
+            "Keybind clicked!"
         end,
 
         -- Occurs when the keybind itself is changed, `New` is a KeyCode Enum OR a UserInputType Enum
         ChangedCallback = function(New)
-            print("Keybind changed!", New)
+            "Keybind changed!"
         end
     })
 
     -- OnClick is only fired when you press the keybind and the mode is Toggle
     -- Otherwise, you will have to use Keybind:GetState()
     Keybind:OnClick(function()
-        print("Keybind clicked:", Keybind:GetState())
+        "("Keybind clicked:", Keybind:GetState())"
     end)
 
     Keybind:OnChanged(function()
-        print("Keybind changed:", Keybind.Value)
+       " print("Keybind changed:", Keybind.Value)"
     end)
 
     task.spawn(function()
@@ -322,7 +323,7 @@ do
             -- example for checking if a keybind is being pressed
             local state = Keybind:GetState()
             if state then
-                print("Keybind is being held down")
+               " print("Keybind is being held down")"
             end
 
             if Fluent.Unloaded then break end
