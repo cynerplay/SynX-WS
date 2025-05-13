@@ -20,9 +20,59 @@ local Tabs = {
 }
 
 local Players = game:GetService("Players")
-_G.espits = false
 
 local Options = Fluent.Options
+
+-- Переменная состояния ESP
+local espEnabled = false
+
+-- Функция для удаления всех Highlight
+local function clearESP()
+    for _, v in pairs(game.Workspace:GetDescendants()) do
+        local highlight = v:FindFirstChildOfClass("Highlight")
+        if highlight then
+            highlight:Destroy()
+        end
+    end
+end
+
+-- Обновление ESP для всех персонажей
+local function updateESP()
+    clearESP()
+    if espEnabled then
+        local color = Options.espColorpicker.Value
+        local transparency = Options.espColorpicker.Transparency or 0
+        for _, v in pairs(game.Workspace:GetDescendants()) do
+            if v:IsA("Model") and v:FindFirstChild("Humanoid") and not v:FindFirstChildOfClass("Highlight") then
+                local esp = Instance.new("Highlight")
+                esp.FillColor = color
+                esp.FillTransparency = transparency
+                esp.OutlineColor = Color3.new(0,0,0)
+                esp.Parent = v
+            end
+        end
+    end
+end
+
+-- Подписка на появление персонажей новых игроков
+local function onPlayerAdded(player)
+    player.CharacterAdded:Connect(function(character)
+        if espEnabled then
+            local color = Options.espColorpicker.Value
+            local transparency = Options.espColorpicker.Transparency or 0
+            local highlight = Instance.new("Highlight")
+            highlight.FillColor = color
+            highlight.FillTransparency = transparency
+            highlight.OutlineColor = Color3.new(0,0,0)
+            highlight.Parent = character
+        end
+    end)
+end
+
+Players.PlayerAdded:Connect(onPlayerAdded)
+for _, player in pairs(Players:GetPlayers()) do
+    onPlayerAdded(player)
+end
 
 do
     Fluent:Notify({
@@ -32,42 +82,7 @@ do
         Duration = 5
     })
 
-    local ToggleESP = Tabs.esp:AddToggle("MyToggle", {Title = "ESP", Default = false })
-    ToggleESP:OnChanged(function(Value)
-        if Value == true then
-            _G.espits = true
-            for _, v in pairs(game.Workspace:GetDescendants()) do
-                if not v:FindFirstChild("Highlight") and v:FindFirstChild("Humanoid") then
-                    local esp = Instance.new("Highlight", v)
-                    esp.FillColor = Color3.fromRGB(17, 164, 255)
-                end
-            end
-        else
-            _G.espits = false
-            for _, v in pairs(game.Workspace:GetDescendants()) do
-                local highlight = v:FindFirstChild("Highlight")
-                if highlight then
-                    highlight:Destroy()
-                end
-            end
-        end
-    end)
-
-    local function onPlayerAdded(player)
-        player.CharacterAdded:Connect(function(character)
-            if _G.espits == true then
-                local esp = Instance.new("Highlight", character)
-                esp.FillColor = Color3.fromRGB(17, 164, 255)
-            end
-        end)
-    end
-
-    Players.PlayerAdded:Connect(onPlayerAdded)
-    -- Подписываемся на уже существующих игроков (если скрипт запускается после их появления)
-    for _, player in pairs(Players:GetPlayers()) do
-        onPlayerAdded(player)
-    end
-
+    -- Главная вкладка без изменений
     Tabs.Main:AddParagraph({
         Title = "Главная",
     })
@@ -136,6 +151,7 @@ do
     end)
     Options.MyToggleMain:SetValue(false)
 
+    -- Вкладка Статистика без изменений
     Tabs.States:AddButton({
         Title = "Сбросить",
         Description = "Сбрашивает статистику игрока до стандартных значений",
@@ -199,113 +215,37 @@ do
         end
     })
 
-    local Dropdown = Tabs.Main:AddDropdown("Dropdown", {
-        Title = "Dropdown",
-        Values = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"},
-        Multi = false,
-        Default = 1,
-    })
+    -- Вкладка ESP: Colorpicker с прозрачностью и Keybind для управления ESP
 
-    Dropdown:SetValue("four")
-
-    Dropdown:OnChanged(function(Value)
-        -- Ваш код при изменении значения
-    end)
-
-    local MultiDropdown = Tabs.Main:AddDropdown("MultiDropdown", {
-        Title = "Dropdown",
-        Description = "You can select multiple values.",
-        Values = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"},
-        Multi = true,
-        Default = {"seven", "twelve"},
-    })
-
-    MultiDropdown:SetValue({
-        three = true,
-        five = true,
-        seven = false
-    })
-
-    MultiDropdown:OnChanged(function(Value)
-        local Values = {}
-        for k, state in pairs(Value) do
-            if state then
-                table.insert(Values, k)
-            end
-        end
-        -- Ваш код при изменении множественного выбора
-    end)
-
-    local Colorpicker = Tabs.Main:AddColorpicker("Colorpicker", {
-        Title = "Colorpicker",
-        Default = Color3.fromRGB(96, 205, 255)
-    })
-
-    Colorpicker:OnChanged(function()
-        -- Ваш код при изменении цвета
-    end)
-
-    Colorpicker:SetValueRGB(Color3.fromRGB(0, 255, 140))
-
-    local TColorpicker = Tabs.Main:AddColorpicker("TransparencyColorpicker", {
-        Title = "Colorpicker",
-        Description = "but you can change the transparency.",
+    local espColorpicker = Tabs.esp:AddColorpicker("espColorpicker", {
+        Title = "Цвет и прозрачность ESP",
         Transparency = 0,
-        Default = Color3.fromRGB(96, 205, 255)
+        Default = Color3.fromRGB(17, 164, 255)
     })
 
-    TColorpicker:OnChanged(function()
-        -- Убрано ненужное строковое выражение
-        -- Можно добавить код для обработки изменения цвета и прозрачности
+    espColorpicker:OnChanged(function()
+        if espEnabled then
+            updateESP()
+        end
     end)
 
-    local Keybind = Tabs.Main:AddKeybind("Keybind", {
-        Title = "KeyBind",
+    local espKeybind = Tabs.esp:AddKeybind("espKeybind", {
+        Title = "Включить/Выключить ESP",
         Mode = "Toggle",
         Default = "LeftControl",
-        Callback = function(Value)
-            print("Keybind clicked! State:", Value)
+        Callback = function(state)
+            espEnabled = state
+            updateESP()
         end,
-        ChangedCallback = function(New)
-            print("Keybind changed! New key:", tostring(New))
+        ChangedCallback = function(newKey)
+            -- Убрано print
         end
     })
 
-    Keybind:OnClick(function()
-        print("Keybind clicked:", Keybind:GetState())
-    end)
-
-    Keybind:OnChanged(function()
-        print("Keybind changed:", Keybind.Value)
-    end)
-
-    task.spawn(function()
-        while true do
-            wait(1)
-            local state = Keybind:GetState()
-            if state then
-                print("Keybind is being held down")
-            end
-            if Fluent.Unloaded then break end
-        end
-    end)
-
-    Keybind:SetValue("MB2", "Toggle")
-
-    local Input = Tabs.Main:AddInput("Input", {
-        Title = "Input",
-        Default = "Default",
-        Placeholder = "Placeholder",
-        Numeric = false,
-        Finished = false,
-        Callback = function(Value)
-            print("Input changed:", Value)
-        end
-    })
+    -- Убраны обработчики с print
 
 end
 
--- Addons:
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
 
