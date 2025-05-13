@@ -77,7 +77,7 @@ end
 do
     Fluent:Notify({
         Title = "SynX-WS",
-        Content = "Скрипт загружен!",
+        Content = "Загрузка библиотеки пользователя",
         SubContent = "SynX-Welcome Script",
         Duration = 5
     })
@@ -260,9 +260,10 @@ SaveManager:BuildConfigSection(Tabs.Settings)
 Window:SelectTab(1)
 
 Fluent:Notify({
-   -- Title = "Fluent",
-   -- Content = "The script has been loaded.",
-   -- Duration = 8
+    Title = "SynX-WS",
+    Content = "Скрипт загружен!",
+    SubContent = "SynX-Welcome Script",
+    Duration = 5
 })
 
 SaveManager:LoadAutoloadConfig()
